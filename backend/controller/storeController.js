@@ -41,8 +41,32 @@ const getAllStoreUsers = (req, res) => {
   });
 };
 
+const updateStoreUserRating = (req, res) => {
+  const { storeUserEmail } = req.params;
+  const { email, rating } = req.body;
+  if (!email || !rating || rating < 1 || rating > 5) {
+    return res.status(400).json({ message: 'Invalid email or rating' });
+  }
+  User.updateStoreUserRating(storeUserEmail, email, rating, (err, result) => {
+    if (err) return res.status(500).json({ message: 'Error updating rating' });
+    res.status(200).json({ message: 'Rating updated' });
+  });
+};
+
+const getStoreUserRatings = (req, res) => {
+  const { storeUserEmail } = req.params;
+  User.getStoreUserRatings(storeUserEmail, (err, results) => {
+    if (err) return res.status(500).json({ message: 'Error fetching ratings' });
+    if (!results || results.length === 0) return res.status(404).json({ message: 'Store user not found' });
+    const { rating, averageRating } = results[0];
+    res.status(200).json({ rating: JSON.parse(rating), averageRating });
+  });
+};
+
 module.exports = {
   createStoreUser,
   getStoreUserByEmail,
-  getAllStoreUsers
+  getAllStoreUsers,
+  updateStoreUserRating,
+  getStoreUserRatings
 };

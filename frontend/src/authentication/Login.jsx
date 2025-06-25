@@ -51,6 +51,9 @@ function Login() {
         } else if(data.user.role==='user') {
           navigate('/user/home');
         }
+        else if(data.user.role==='store-user') {
+          navigate('/storeuser/home');
+        }
         else
         {
           navigate('/');

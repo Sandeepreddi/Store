@@ -16,6 +16,11 @@ import UserHeader from './user/Header';
 import UserLayout from './user/UserHome';
 import UserDashboard from './user/body/Dashboard'
 
+//storeuser
+import StoreHeader from './storeuser/Header';
+import StoreUserLayout from './storeuser/StoreUserHome';
+import StoreDashboard from './storeuser/body/Dashboard';
+
 
 
 
@@ -42,6 +47,14 @@ function App() {
 
         <Route path='/user' element={<UserLayout />}>
           <Route path='home' element={<UserDashboard />} />
+
+          {/* Add more admin routes like below: */}
+          {/* <Route path='users' element={<Users />} /> */}
+          {/* <Route path='settings' element={<Settings />} /> */}
+        </Route>
+
+        <Route path='/storeuser' element={<StoreUserLayout />}>
+          <Route path='home' element={<StoreDashboard />} />
 
           {/* Add more admin routes like below: */}
           {/* <Route path='users' element={<Users />} /> */}

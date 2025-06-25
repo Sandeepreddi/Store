@@ -14,6 +14,10 @@ router.get('/view/admin', authController.getAllAdmins);
 router.get('/view/storeuser', storeController.getAllStoreUsers);
 
 // 🔹 Update user profile (fullName and address)
-router.put('/update/:email', authController.updateUserProfile);
+router.put('/update/:email', authController.updateUser);
+
+// Store user ratings
+router.put('/storeuser/:storeUserEmail/rating', storeController.updateStoreUserRating);
+router.get('/storeuser/:storeUserEmail/ratings', storeController.getStoreUserRatings);
 
 module.exports = router;

@@ -24,11 +24,18 @@ const login = (req, res) => {
   User.findUserByEmail(email, (err, results) => {
     if (err) return res.status(500).json({ message: 'Login error' });
 
-    if (!results || results.length === 0 || results[0].password !== password) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    if (results && results.length > 0 && results[0].password === password) {
+      return res.status(200).json({ message: 'Login successful', user: results[0], role: results[0].role });
     }
 
-    res.status(200).json({ message: 'Login successful', user: results[0] });
+    // If not found in users, check storeusers
+    User.findStoreUserByEmail(email, (err2, storeResults) => {
+      if (err2) return res.status(500).json({ message: 'Login error' });
+      if (storeResults && storeResults.length > 0 && storeResults[0].password === password) {
+        return res.status(200).json({ message: 'Login successful', user: storeResults[0], role: 'store-user' });
+      }
+      return res.status(401).json({ message: 'Invalid credentials' });
+    });
   });
 };
 

@@ -57,6 +57,35 @@ const updateUserByEmail = (email, fullName, address, callback) => {
   db.query(sql, [fullName, address, email], callback);
 };
 
+// Update or add a rating for a store user
+const updateStoreUserRating = (storeUserEmail, userEmail, rating, callback) => {
+  // Fetch current ratings
+  const selectSql = 'SELECT rating FROM storeusers WHERE email = ?';
+  db.query(selectSql, [storeUserEmail], (err, results) => {
+    if (err) return callback(err);
+    let ratings = [];
+    if (results && results[0] && results[0].rating) {
+      try {
+        ratings = JSON.parse(results[0].rating);
+      } catch (e) { ratings = []; }
+    }
+    // Update or add rating
+    const idx = ratings.findIndex(r => r.email === userEmail);
+    if (idx !== -1) ratings[idx].rating = rating;
+    else ratings.push({ email: userEmail, rating });
+    // Calculate average
+    const avg = ratings.length ? (ratings.reduce((a, b) => a + b.rating, 0) / ratings.length) : 0;
+    // Update in DB
+    const updateSql = 'UPDATE storeusers SET rating = ?, averageRating = ? WHERE email = ?';
+    db.query(updateSql, [JSON.stringify(ratings), avg, storeUserEmail], callback);
+  });
+};
+
+// Get ratings for a store user
+const getStoreUserRatings = (storeUserEmail, callback) => {
+  const sql = 'SELECT rating, averageRating FROM storeusers WHERE email = ?';
+  db.query(sql, [storeUserEmail], callback);
+};
 
 module.exports = {
   createUser,
@@ -66,5 +95,7 @@ module.exports = {
   findStoreUserByEmail,
   findAllStoreUsers,    // ✅ Added
   findUsersByRole,       // ✅ Added
-  updateUserByEmail
+  updateUserByEmail,
+  updateStoreUserRating,
+  getStoreUserRatings
 };

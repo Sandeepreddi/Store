@@ -63,10 +63,25 @@ function Header() {
   return (
     <header>
       <nav className="bg-white border-b shadow-sm px-4 py-3 dark:bg-gray-800">
-        <div className="max-w-screen-xl mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold text-gray-800 dark:text-white">My App</h1>
+        <div className="max-w-screen-xl mx-auto flex items-center justify-between">
+          {/* Left - Navigation */}
+          <div className="flex-1">
+            <ul className="flex space-x-6">
+              <li>
+                <button onClick={() => navigate('/user/home')} className="text-gray-700 hover:text-primary-700 dark:text-white dark:hover:text-primary-400">
+                  Home
+                </button>
+              </li>
+            </ul>
+          </div>
 
-          <div className="relative" ref={dropdownRef}>
+          {/* Center - App Name */}
+          <div className="flex-1 flex justify-center">
+            <h1 className="text-xl font-bold text-gray-800 dark:text-white">My App</h1>
+          </div>
+
+          {/* Right - Profile Icon & Dropdown */}
+          <div className="flex-1 flex justify-end relative" ref={dropdownRef}>
             <button
               onClick={() => setShowDropdown(!showDropdown)}
               className="text-gray-700 dark:text-white text-3xl focus:outline-none"
@@ -75,55 +90,85 @@ function Header() {
             </button>
 
             {showDropdown && user && (
-              <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-gray-700 rounded-xl shadow-lg p-5 z-20">
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">Profile</h3>
+              <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-gray-700 rounded-xl shadow-lg p-5 z-20 space-y-4">
+                {/* Profile Header Card */}
+                <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-600 rounded-lg shadow-sm">
+                  <div className="mr-4">
+                    <FaUserCircle className="text-4xl text-blue-500 dark:text-blue-300" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-800 dark:text-white">{user.fullName}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">{user.role}</p>
+                  </div>
+                </div>
 
                 {!isEditing ? (
-                  <div className="space-y-1 text-sm text-gray-700 dark:text-gray-200">
-                    <p><strong>Name:</strong> {user.fullName}</p>
-                    <p><strong>Email:</strong> {user.email}</p>
-                    <p><strong>Role:</strong> {user.role}</p>
-                    <p><strong>Address:</strong> {user.address}</p>
+                  <>
+                    {/* User Info Card */}
+                    <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg shadow-sm space-y-3">
+                      <div className="space-y-1">
+                        <p className="text-xs font-medium text-gray-500 dark:text-gray-400">EMAIL</p>
+                        <p className="text-sm text-gray-800 dark:text-gray-100">{user.email}</p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-xs font-medium text-gray-500 dark:text-gray-400">ADDRESS</p>
+                        <p className="text-sm text-gray-800 dark:text-gray-100">{user.address}</p>
+                      </div>
+                    </div>
+
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="mt-3 bg-yellow-500 hover:bg-yellow-600 text-white w-full py-1 rounded"
+                      className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
                     >
-                      Edit
+                      Edit Profile
                     </button>
-                  </div>
+                  </>
                 ) : (
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-sm text-gray-600 dark:text-gray-300">Full Name</label>
-                      <input
-                        type="text"
-                        name="fullName"
-                        value={editData.fullName}
-                        onChange={handleEditChange}
-                        className="w-full border rounded px-2 py-1 dark:bg-gray-600"
-                      />
+                  <>
+                    {/* Edit Form Card */}
+                    <div className="p-4 bg-gray-50 dark:bg-gray-600 rounded-lg shadow-sm space-y-4">
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-gray-500 dark:text-gray-400">FULL NAME</label>
+                        <input
+                          type="text"
+                          name="fullName"
+                          value={editData.fullName}
+                          onChange={handleEditChange}
+                          className="w-full px-3 py-2 border rounded-md text-sm dark:bg-gray-700 dark:border-gray-600"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-gray-500 dark:text-gray-400">ADDRESS</label>
+                        <textarea
+                          name="address"
+                          value={editData.address}
+                          onChange={handleEditChange}
+                          rows="3"
+                          className="w-full px-3 py-2 border rounded-md text-sm dark:bg-gray-700 dark:border-gray-600"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <label className="text-sm text-gray-600 dark:text-gray-300">Address</label>
-                      <textarea
-                        name="address"
-                        value={editData.address}
-                        onChange={handleEditChange}
-                        className="w-full border rounded px-2 py-1 dark:bg-gray-600"
-                      />
+
+                    <div className="flex space-x-3">
+                      <button
+                        onClick={() => setIsEditing(false)}
+                        className="flex-1 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleUpdate}
+                        className="flex-1 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+                      >
+                        Save Changes
+                      </button>
                     </div>
-                    <button
-                      onClick={handleUpdate}
-                      className="bg-green-500 hover:bg-green-600 text-white w-full py-1 rounded"
-                    >
-                      Save
-                    </button>
-                  </div>
+                  </>
                 )}
 
                 <button
                   onClick={handleLogout}
-                  className="mt-4 bg-red-500 hover:bg-red-600 text-white w-full py-2 rounded-md"
+                  className="w-full py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
                 >
                   Logout
                 </button>

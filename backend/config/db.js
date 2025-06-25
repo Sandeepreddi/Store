@@ -27,8 +27,31 @@ db.connect((err) => {
       )
     `;
     db.query(createUsersTable, (err) => {
-      if (err) console.error('Failed to create users table:', err);
-      else console.log('Users table is ready.');
+      if (err) {
+        console.error('Failed to create users table:', err);
+      } else {
+        console.log('Users table is ready.');
+
+        // Insert dummy admin user if not exists
+        const insertAdmin = `
+          INSERT INTO users (fullName, email, address, role, password)
+          SELECT * FROM (
+            SELECT 'admin' AS fullName, 'admin@gmail.com' AS email, 'Admin Address' AS address, 'admin' AS role, 'admin' AS password
+          ) AS tmp
+          WHERE NOT EXISTS (
+            SELECT email FROM users WHERE email = 'admin@gmail.com'
+          ) LIMIT 1
+        `;
+        db.query(insertAdmin, (err, result) => {
+          if (err) {
+            console.error('Failed to insert admin user:', err);
+          } else if (result.affectedRows > 0) {
+            console.log('Default admin user inserted.');
+          } else {
+            console.log('Admin user already exists.');
+          }
+        });
+      }
     });
 
     // Create storeusers table
@@ -51,5 +74,7 @@ db.connect((err) => {
     });
   }
 });
+
+
 
 module.exports = db;
