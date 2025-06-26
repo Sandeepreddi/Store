@@ -68,8 +68,13 @@ function Header() {
           <div className="flex-1">
             <ul className="flex space-x-6">
               <li>
-                <button onClick={() => navigate('/user/home')} className="text-gray-700 hover:text-primary-700 dark:text-white dark:hover:text-primary-400">
-                  Home
+                <button onClick={() => navigate('/storeuser/home')} className="text-gray-700 hover:text-primary-700 dark:text-white dark:hover:text-primary-400">
+                  MyStore
+                </button>
+              </li>
+              <li>
+                <button onClick={() => navigate('/storeuser/store')} className="text-gray-700 hover:text-primary-700 dark:text-white dark:hover:text-primary-400">
+                  Stores
                 </button>
               </li>
             </ul>
